@@ -20,7 +20,7 @@ namespace TrainingWebAPI.WebAPI.Controllers
     {
         private IActorService actorService;
         public ActorsController(IActorService actorService)
-        {           
+        {
             this.actorService = actorService;
         }
         [HttpGet]
@@ -29,29 +29,24 @@ namespace TrainingWebAPI.WebAPI.Controllers
         public async Task<IHttpActionResult> GetActorsPlayedInMovieAsync(string movieName)
         {
             List<ActorModel> list = new List<ActorModel>();
-            try
-            {
-                list = await actorService.GetActorsPlayedInMovieAsync(movieName);
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError();
-            }
+            list = await actorService.GetActorsPlayedInMovieAsync(movieName);
+            int a = 1;
+            int b = 0;
+            int c = a / b;
             return Ok(list);
-            
         }
 
         [HttpGet]
         [Route("search")]
         [ResponseType(typeof(List<ActorModel>))]
-        public IHttpActionResult GetActorsPlayedInMovie(string movieName) 
+        public IHttpActionResult GetActorsPlayedInMovie(string movieName)
         {
             List<ActorModel> list = new List<ActorModel>();
             try
             {
-                list = actorService.GetActorsPlayedInMovie(movieName);                
+                list = actorService.GetActorsPlayedInMovie(movieName);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return InternalServerError();
             }
@@ -97,7 +92,7 @@ namespace TrainingWebAPI.WebAPI.Controllers
             {
 
             }
-           
+
             return new MyMessageResult("Update Actor Successfully", Request);
         }
 
@@ -115,10 +110,10 @@ namespace TrainingWebAPI.WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return InternalServerError();   
+                return InternalServerError();
             }
             return new MyMessageResult("New Actor Successfully", Request);
         }
-        
+
     }
 }

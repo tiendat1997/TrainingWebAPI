@@ -60,11 +60,10 @@ namespace TrainingWebAPI.WebAPI
                     new InterceptionBehavior<BusinessLogicBehaviour>()
                 });
 
-            container.RegisterTypes(RegisterTypesScan.GetTypesWithCustomAttribute<DataAccessAttribute>(repositoryAssemblies), WithMappings.FromMatchingInterface, WithName.Default, WithLifetime.Transient,
-              getInjectionMembers: t => new InjectionMember[] {
-                    new Interceptor<InterfaceInterceptor>(), //Interception technique
-                    new InterceptionBehavior<DataAccessBehaviour>()
-              });
+            container.RegisterTypes(RegisterTypesScan.GetTypesWithCustomAttribute<DataAccessAttribute>(repositoryAssemblies), 
+                WithMappings.FromMatchingInterface, 
+                WithName.Default, 
+                WithLifetime.Transient);
 
             container
                     .RegisterType<LogHandler>(new ContainerControlledLifetimeManager())

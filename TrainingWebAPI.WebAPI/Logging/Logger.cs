@@ -20,28 +20,28 @@ namespace TrainingWebAPI.WebAPI.Logging
     {
         private static Logger Log => LogManager.GetCurrentClassLogger();      
        
-        public void LogMessage(TracingLevel level, TracingLayer layer, string message)
+        public void LogMessage(TracingLevel level, string message = "", Exception exception = null)
         {
             switch (level)
             {
                 case TracingLevel.DEBUG:
-                    Log.Debug($"[{layer.ToString()}] {message}");
+                    Log.Debug(message);
                     break;
 
                 case TracingLevel.INFO:
-                    Log.Info($"[{layer.ToString()}] {message}");
+                    Log.Info(message);
                     break;
 
                 case TracingLevel.WARN:
-                    Log.Warn($"[{layer.ToString()}] {message}");
+                    Log.Warn(message);
                     break;
 
-                case TracingLevel.ERROR:
-                    Log.Error($"[{layer.ToString()}] {message}");
+                case TracingLevel.ERROR:                                       
+                    Log.Error(exception);
                     break;
 
                 case TracingLevel.FATAL:
-                    Log.Fatal($"[{layer.ToString()}] {message}");
+                    Log.Fatal(message);
                     break;
             }
         }

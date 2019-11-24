@@ -20,17 +20,17 @@ namespace TrainingWebAPI.WebAPI.Logging
         public IMethodReturn Invoke(IMethodInvocation input, GetNextInterceptionBehaviorDelegate getNext)
         {
 
-            LogHandler.LogMessage(TracingLevel.INFO, TracingLayer.BUSINESS_LOGIC, String.Format("[{0}:{1}]", this.GetType().Name, "Invoke"));
+            LogHandler.LogMessage(TracingLevel.INFO, String.Format("[{0}] {1}:{2}", TracingLayer.BUSINESS_LOGIC.ToString(), input.Target.ToString(), "Invoke"));
 
             var methodReturn = getNext().Invoke(input, getNext);
 
             if (methodReturn.Exception == null)
             {
-                LogHandler.LogMessage(TracingLevel.INFO, TracingLayer.BUSINESS_LOGIC, String.Format("Successfully finished {0} {1}", input.MethodBase.ToString(), input.Target.ToString()));
+                LogHandler.LogMessage(TracingLevel.INFO, String.Format("[{0}] {1}:{2}", TracingLayer.BUSINESS_LOGIC.ToString(), input.MethodBase.ToString(), "Execute Succesfully"));
             }
             else
             {
-                LogHandler.LogMessage(TracingLevel.ERROR, TracingLayer.BUSINESS_LOGIC, String.Format("Finished {0} with exception {1}: {2}", input.MethodBase.ToString(), methodReturn.Exception.GetType().Name, methodReturn.Exception.Message));
+                LogHandler.LogMessage(TracingLevel.ERROR, String.Format("Exception occurs [{0}] {1}", input.MethodBase.ToString(), input.Target.ToString()), methodReturn.Exception);
             }
 
             return methodReturn;

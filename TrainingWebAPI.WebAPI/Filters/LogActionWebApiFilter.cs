@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
@@ -10,7 +12,7 @@ using Unity;
 
 namespace TrainingWebAPI.WebAPI.Filters
 {
-    public class LogActionWebApiFilter : ActionFilterAttribute
+    public class LogActionWebApiFilter : ActionFilterAttribute, IExceptionFilter
     {
         [Dependency]
         public LogHandler LogHandler { get; set; }
@@ -19,19 +21,29 @@ namespace TrainingWebAPI.WebAPI.Filters
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
             // pre-processing
-            LogHandler.LogMessage(TracingLevel.INFO,TracingLayer.FILTER, "OnActionExecuted Request " + actionContext.Request.RequestUri.ToString());
+            LogHandler.LogMessage(TracingLevel.INFO, string.Format("[{0}] OnActionExecuting Request: {1}", TracingLayer.FILTER.ToString(), actionContext.Request.RequestUri.ToString()));
+            string controller = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
+            string action = actionContext.ActionDescriptor.ActionName;
+            LogHandler.LogMessage(TracingLevel.INFO, string.Format("[{0}] {1},{2}:Invoke", TracingLayer.CONTROLLER.ToString(), controller, action));
         }
 
         public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
-            var objectContent = actionExecutedContext.Response.Content as ObjectContent;
-            if (objectContent != null)
+            if (actionExecutedContext.Exception == null)
             {
-                var type = objectContent.ObjectType; //type of the returned object
-                var value = objectContent.Value; //holding the returned value
+                LogHandler.LogMessage(TracingLevel.INFO, string.Format("[{0}] OnActionExecuted Response: {1}", TracingLayer.FILTER.ToString(), actionExecutedContext.Response.StatusCode.ToString()));
             }
-
-            LogHandler.LogMessage(TracingLevel.INFO, TracingLayer.FILTER, "OnActionExecuted Response " + actionExecutedContext.Response.StatusCode.ToString());
+        }
+        
+        public Task ExecuteExceptionFilterAsync(HttpActionExecutedContext actionExecutedContext, CancellationToken cancellationToken)
+        {
+            Action action = () =>
+            {
+                LogHandler.LogMessage(TracingLevel.ERROR, "", actionExecutedContext.Exception);
+            };
+            var task = new Task(action);
+            task.Start();
+            return task;
         }
     }
 }

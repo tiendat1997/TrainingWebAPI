@@ -55,6 +55,11 @@
     <Compile Include="Director.cs" />
     <Compile Include="EFTrainingEntities.cs" />
     <Compile Include="Genre.cs" />
+    <Compile Include="Migrations\201911240640047_init-data.cs" />
+    <Compile Include="Migrations\201911240640047_init-data.Designer.cs">
+      <DependentUpon>201911240640047_init-data.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Movie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rating.cs" />
@@ -67,6 +72,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201911240640047_init-data.resx">
+      <DependentUpon>201911240640047_init-data.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
