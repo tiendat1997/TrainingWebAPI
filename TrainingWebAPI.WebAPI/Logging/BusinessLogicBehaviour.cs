@@ -1,7 +1,10 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
+using TrainingWebAPI.WebAPI.Common;
 using Unity;
 using Unity.Interception.InterceptionBehaviors;
 using Unity.Interception.PolicyInjection.Pipeline;
@@ -19,18 +22,16 @@ namespace TrainingWebAPI.WebAPI.Logging
 
         public IMethodReturn Invoke(IMethodInvocation input, GetNextInterceptionBehaviorDelegate getNext)
         {
-
-            LogHandler.LogMessage(TracingLevel.INFO, String.Format("[{0}] {1}:{2}", TracingLayer.BUSINESS_LOGIC.ToString(), input.Target.ToString(), "Invoke"));
-
+            string layer = TracingLayer.BUSINESS_LOGIC.ToString();
+            LogHandler.LogMessage(TracingLevel.INFO, string.Format("[{0}:{1}] {2} -> {3}", layer, LogMessageStatus.INVOKE, input.Target.ToString(), input.MethodBase.Name));
             var methodReturn = getNext().Invoke(input, getNext);
-
             if (methodReturn.Exception == null)
             {
-                LogHandler.LogMessage(TracingLevel.INFO, String.Format("[{0}] {1}:{2}", TracingLayer.BUSINESS_LOGIC.ToString(), input.MethodBase.ToString(), "Execute Succesfully"));
+                LogHandler.LogMessage(TracingLevel.INFO, string.Format("[{0}:{1}] {2} -> {3}", layer, LogMessageStatus.EXECUTE_SUCCESSFULLY, input.Target.ToString(), input.MethodBase.Name));
             }
             else
             {
-                LogHandler.LogMessage(TracingLevel.ERROR, String.Format("Exception occurs [{0}] {1}", input.MethodBase.ToString(), input.Target.ToString()), methodReturn.Exception);
+                LogHandler.LogException(TracingLevel.ERROR, methodReturn.Exception);
             }
 
             return methodReturn;

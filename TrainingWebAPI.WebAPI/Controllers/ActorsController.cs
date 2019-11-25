@@ -30,9 +30,6 @@ namespace TrainingWebAPI.WebAPI.Controllers
         {
             List<ActorModel> list = new List<ActorModel>();
             list = await actorService.GetActorsPlayedInMovieAsync(movieName);
-            int a = 1;
-            int b = 0;
-            int c = a / b;
             return Ok(list);
         }
 
@@ -42,14 +39,8 @@ namespace TrainingWebAPI.WebAPI.Controllers
         public IHttpActionResult GetActorsPlayedInMovie(string movieName)
         {
             List<ActorModel> list = new List<ActorModel>();
-            try
-            {
-                list = actorService.GetActorsPlayedInMovie(movieName);
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError();
-            }
+            list = actorService.GetActorsPlayedInMovie(movieName);
+
             return Ok(list);
         }
         [HttpDelete]

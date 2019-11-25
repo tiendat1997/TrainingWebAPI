@@ -29,7 +29,9 @@ namespace TrainingWebAPI.WebAPI
           new Lazy<IUnityContainer>(() =>
           {
               var container = new UnityContainer()
+                 .AddNewExtension<LogCreation>()
                  .AddNewExtension<Interception>();
+
               RegisterTypes(container);
               return container;
           });
@@ -63,7 +65,11 @@ namespace TrainingWebAPI.WebAPI
             container.RegisterTypes(RegisterTypesScan.GetTypesWithCustomAttribute<DataAccessAttribute>(repositoryAssemblies), 
                 WithMappings.FromMatchingInterface, 
                 WithName.Default, 
-                WithLifetime.Transient);
+                WithLifetime.Transient,
+                  getInjectionMembers: t => new InjectionMember[] {
+                    new Interceptor<InterfaceInterceptor>(), //Interception technique
+                    new InterceptionBehavior<DataAccessBehaviour>()
+                });
 
             container
                     .RegisterType<LogHandler>(new ContainerControlledLifetimeManager())
